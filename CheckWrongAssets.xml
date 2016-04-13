@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?><?Siebel-Property-Set EscapeNames="true"?><Business_spcService
+ Comments="10Jan2014-SURESHDD-Created for UC_CRM_OM_421-Remove Add-On - Paid ( Non-assisted)"
+ State_spcManagement_spcType="Stateful"
+ Cache="N"
+ Server_spcEnabled="N"
+ Display_spcName="CheckWrongAssets"
+ Inactive="N"
+ Hidden="N"
+ Class="CSSService"
+ Name="CheckWrongAssets"
+><Business_spcService_spcMethod
+ Comments=""
+ Parent_spcId="1-1W3EZR"
+ Display_spcName="CheckOLI"
+ Parent_spcName="CheckWrongAssets"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Hidden="N"
+ Name="CheckOLI"
+></Business_spcService_spcMethod
+><Business_spcService_spcScript
+ Comments=""
+ Parent_spcId="1-1W3EZR"
+ Parent_spcName="CheckWrongAssets"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Script="function CheckOLI (Inputs,Outputs)_newline{_newline  try_newline  {_newline    var boOrder  = TheApplication().GetBusObject(&quot;Order Entry (Sales)&quot;);   _newline        var bcOLI  = boOrder.GetBusComp(&quot;Order Entry - Line Items&quot;);_newline    var newOrdId =Inputs.GetProperty(&quot;New Order Id&quot;);_newline    var ProdAmount=&quot;&quot;;_newline    var srchexp = &quot;&quot;;_newline    var count=0;_newlinevar roli_us1;_newlinevar roli;_newline    var strLIC;_newline    with(bcOLI) _newline    {_newline      SetViewMode(AllView);_newline                                                                                                ActivateField(&quot;Order Header Id&quot;);_newline                                                                                                ActivateField(&quot;Product Id&quot;);_newline      ClearToQuery();_newline      SetSearchSpec(&quot;Order Header Id&quot;,newOrdId);_newline      SetSearchSpec(&quot;Product Id&quot;,&quot;1-JZPR&quot;);_newline      ExecuteQuery(ForwardOnly);_newline       var isOrdRec = CountRecords();_newline                                                                                               if(isOrdRec)_newline      {_newline       roli=GetFieldValue(&quot;Id&quot;);_newline      _newline      }_newlineActivateField(&quot;Root Order Item Id&quot;);_newline_newline      ClearToQuery();_newline      SetSearchSpec(&quot;Order Header Id&quot;,newOrdId);_newline      ExecuteQuery(ForwardOnly);_newline      isOrdRec = FirstRecord();_newline      while (isOrdRec)_newline      {_newline_newlineroli_us1=GetFieldValue(&quot;Root Order Item Id&quot;);_newline_newline       if (roli==roli_us1)_newline{_newline       count++;_newline}_newline       else_newline{_newline       DeleteRecord();_newline_newline_newlineWriteRecord();_newline}_newline  _newline_newlineisOrdRec=NextRecord();    }_newline    }_newlineOutputs.SetProperty(&quot;count&quot;,count);_newline}_newline_newline    catch(e)_newline    {_newline    throw(e);_newline    }_newline    finally_newline    {_newline    bcOLI = null;_newline    boOrder  = null;_newline}_newline  _newline}"
+ Program_spcLanguage="JS"
+ Name=" CheckOLI"
+ Sequence="1"
+></Business_spcService_spcScript
+><Business_spcService_spcScript
+ Comments=""
+ Parent_spcId="1-1W3EZR"
+ Parent_spcName="CheckWrongAssets"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Script="function Service_usPreInvokeMethod (MethodName, Inputs, Outputs)_newline_newline{_newline if ( MethodName==&quot;CheckOLI&quot;)_newline{_newline CheckOLI(Inputs, Outputs);_newlinereturn(CancelOperation);_newline}_newline return (ContinueOperation);_newline}"
+ Program_spcLanguage="JS"
+ Name="Service_usPreInvokeMethod"
+ Sequence="2"
+></Business_spcService_spcScript
+></Business_spcService
+>

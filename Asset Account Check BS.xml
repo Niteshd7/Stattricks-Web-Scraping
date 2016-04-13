@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><?Siebel-Property-Set EscapeNames="true"?><Business_spcService
+ Comments=""
+ State_spcManagement_spcType="Stateful"
+ Cache="N"
+ Server_spcEnabled="N"
+ Display_spcName="Asset Account Check BS"
+ Inactive="N"
+ Hidden="N"
+ Class="CSSService"
+ Name="Asset Account Check BS"
+><Business_spcService_spcScript
+ Comments="aa"
+ Parent_spcId="1-1YLZJV"
+ Parent_spcName="Asset Account Check BS"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Script="function Service_usPreInvokeMethod (MethodName, Inputs, Outputs)_newline{_newlineif (MethodName == &quot;CheckAssetAccount&quot;)_newline{_newlinevar CurrAccntId = Inputs.GetProperty(&quot;CurrAccntId&quot;);_newlinevar BillAccId = Inputs.GetProperty(&quot;BillAccId&quot;);_newlinevar currServId = Inputs.GetProperty(&quot;pCurrentServiceId&quot;);_newlinevar pSecFlag = &quot;&quot;;_newline_newlinevar AccBO = TheApplication().GetBusObject(&quot;Account&quot;);_newlinevar AccBC = AccBO.GetBusComp(&quot;Account&quot;);_newlinevar AssetBO = TheApplication().GetBusObject(&quot;Asset DB&quot;);_newlinevar AssetBC = AssetBO.GetBusComp(&quot;Asset Mgmt - Asset&quot;);_newlinevar AssetExpr = &quot;[Billing Account Id] = &apos;&quot; +BillAccId+&quot;&apos; AND[Prod Type] = &apos;Service Plan&apos; AND [Payment Type] = &apos;Postpaid&apos; AND [Status] &lt;&gt; &apos;Inactive&apos; AND [Serial Number] &lt;&gt; &apos;&quot;+currServId+&quot;&apos;&quot;;_newlinevar AssetExpr1 = &quot;[Product Name] = &apos;Consumer Account Level Bundle&apos; AND [Status] &lt;&gt; &apos;Inactive&apos; AND [Billing Account Id] = &apos;&quot; +BillAccId+ &quot;&apos;&quot;;_newlinevar AccExpr = &quot;[Id] = &apos;&quot; + CurrAccntId + &quot;&apos; AND ([Parent HQ DUNS] IS NULL OR [Parent HQ DUNS] = &apos;&apos;)&quot;;_newline_newline_newlinewith (AccBC)_newline{_newlineSetViewMode(AllView);_newlineClearToQuery();_newlineSetSearchSpec(&quot;Id&quot;,BillAccId);_newlineSetSearchSpec(&quot;Parent HQ DUNS&quot;,currServId);_newlineExecuteQuery(ForwardOnly);_newlineif (CountRecords() == 0)_newline{_newline//TheApplication().RaiseErrorText(&quot;In Loop&quot;);_newlinepSecFlag = &quot;Y&quot;;_newlineSetViewMode(AllView);_newlineClearToQuery();_newlineSetSearchExpr(AccExpr);_newlineExecuteQuery(ForwardOnly);_newlineif (FirstRecord())_newline  {_newline //TheApplication().RaiseErrorText(&quot;In Loop Inner&quot;);_newline  SetFieldValue(&quot;Parent HQ DUNS&quot;,currServId);_newline  WriteRecord();_newline   return (CancelOperation);_newline  }_newline_newline}_newline}_newline_newlineif (pSecFlag == &quot;Y&quot;)_newlinereturn (CancelOperation);_newline_newlinewith (AssetBC)_newline{_newlineSetViewMode(AllView);_newlineClearToQuery();_newlineSetSearchExpr(AssetExpr);_newlineExecuteQuery(ForwardOnly);_newlineif  (CountRecords() &gt; 0)_newlineTheApplication().RaiseErrorText(&quot;The Account has more Postpaid service associated with it. Please transfer them first before transfering Primary MSISDN&quot;);_newline//Outputs.SetProperty(&quot;pPostpaidServiceCount&quot;,CountRecords());_newline_newlineClearToQuery();_newlineSetSearchExpr(AssetExpr1);_newlineExecuteQuery(ForwardOnly);_newlineif  (CountRecords() &gt; 0)_newlineTheApplication().RaiseErrorText(&quot;The Account has Customer Service Bundle service associated with it.&quot;);_newline//Outputs.SetProperty(&quot;pServiceBundleCount&quot;,CountRecords());_newline}_newline_newlinewith (AccBC)_newline{_newlineSetViewMode(AllView);_newlineClearToQuery();_newlineSetSearchExpr(AccExpr);_newlineExecuteQuery(ForwardOnly);_newlineif (FirstRecord())_newlineSetFieldValue(&quot;Parent HQ DUNS&quot;,currServId);_newlineWriteRecord();_newline}_newlinereturn (CancelOperation);_newline}_newline_newline_newline return (ContinueOperation);_newline}"
+ Program_spcLanguage="JS"
+ Name="Service_usPreInvokeMethod"
+ Sequence="1"
+></Business_spcService_spcScript
+></Business_spcService
+>

@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?><?Siebel-Property-Set EscapeNames="true"?><Business_spcService
+ Comments=""
+ State_spcManagement_spcType="Stateful"
+ Cache="N"
+ Server_spcEnabled="N"
+ Display_spcName="Test PIN PUK"
+ Inactive="N"
+ Hidden="N"
+ Class="CSSService"
+ Name="Test PIN PUK"
+><Business_spcService_spcScript
+ Comments=""
+ Parent_spcId="1-4SB77X"
+ Parent_spcName="Test PIN PUK"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Script="function Service_usPreInvokeMethod (MethodName, Inputs, Outputs)_newline{_newlineif (MethodName == &quot;Test&quot;)_newline{_newlinevar vId=&apos;1-3YG-14&apos;;_newlinevar wfOutPS  = TheApplication().NewPropertySet();_newline   var FileSvc = TheApplication().GetService(&quot;Workflow Process Manager&quot;);_newline   var tmpPS    = TheApplication().NewPropertySet();_newline   var outps    = TheApplication().NewPropertySet();_newline  _newline   var procName = &quot;VFQ Retrieve PIN PUK Process&quot; ;_newline    tmpPS.SetProperty(&quot;ProcessName&quot;, procName);_newline    tmpPS.SetProperty(&quot;Object Id&quot;, vId);_newline    FileSvc.InvokeMethod (&quot;RunProcess&quot;, tmpPS, wfOutPS);_newlinevar vPIN =wfOutPS.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetProperty(&apos;PIN1&apos;)_newlinevar    vPUK = wfOutPS.GetChild(2).GetChild(0).GetChild(0).GetChild(0).GetChild(0).GetProperty(&apos;PUK1&apos;)_newline_newlineTheApplication().RaiseErrorText(vPIN+&quot;::&quot;+vPUK);_newline_newline}_newline}"
+ Program_spcLanguage="JS"
+ Name="Service_usPreInvokeMethod"
+ Sequence="0"
+></Business_spcService_spcScript
+></Business_spcService
+>

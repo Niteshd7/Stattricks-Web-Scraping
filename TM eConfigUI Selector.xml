@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?><?Siebel-Property-Set EscapeNames="true"?><Business_spcService
+ Comments=""
+ State_spcManagement_spcType="Stateful"
+ Cache="N"
+ Server_spcEnabled="N"
+ Display_spcName="TM eConfigUI Selector"
+ Inactive="N"
+ Hidden="N"
+ Class="CSSService"
+ Name="TM eConfigUI Selector"
+><Business_spcService_spcScript
+ Comments=""
+ Parent_spcId="1-37ZQ8L"
+ Parent_spcName="TM eConfigUI Selector"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Script="_newline//bypass by setting this variable as false_newlinevar bypassUISelector=false;"
+ Program_spcLanguage="JS"
+ Name="(declarations)"
+ Sequence="1"
+></Business_spcService_spcScript
+><Business_spcService_spcScript
+ Comments=""
+ Parent_spcId="1-37ZQ8L"
+ Parent_spcName="TM eConfigUI Selector"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Script="function Service_usPreInvokeMethod (MethodName, Inputs, Outputs)_newline{_newline_newline if(&quot;SelectUI&quot; == MethodName)_newline  if(bypassUISelector)_newline   return CancelOperation;_newline  else_newline   return func_usSelectUI(Inputs, Outputs);_newline else_newline  return ContinueOperation;_newline}"
+ Program_spcLanguage="JS"
+ Name="Service_usPreInvokeMethod"
+ Sequence="3"
+></Business_spcService_spcScript
+><Business_spcService_spcScript
+ Comments=""
+ Parent_spcId="1-37ZQ8L"
+ Parent_spcName="TM eConfigUI Selector"
+ Parent_spcInactive="N"
+ Inactive="N"
+ Script="function func_usSelectUI(Inputs, Outputs)_newline{_newline Outputs.SetProperty(&quot;ErrorCode&quot;, &quot;&quot;);_newline Outputs.SetProperty(&quot;ErrorText&quot;, &quot;&quot;);_newline Outputs.SetProperty(&quot;Error Code&quot;, &quot;&quot;);_newline Outputs.SetProperty(&quot;Error Message&quot;, &quot;&quot;);_newline //TheApplication().RaiseErrorText(&quot;eConfig UI Loader&quot;);_newline var strOLIIntegId  = Inputs.GetProperty(&quot;OLIIntegId&quot;); // Get ItemAssetIntegrationId_newline var strProdId  = Inputs.GetProperty(&quot;Product_usId&quot;);_newline var strUI_usName = &quot;&quot;;_newline if(&quot;1-L0J7B&quot;==strProdId)_newline  strUI_usName = &quot;UI_usA&quot;;_newline else if(&quot;1-JZPR&quot; == strProdId)//Mobile Service Bundle_newline {_newline   //check if asset is in suspended status_newline  //TheApplication().RaiseErrorText(&quot;strOLIIntegId :&quot; +strOLIIntegId );_newline  if(&quot;&quot; != strOLIIntegId)_newline                 {_newline  var boHeader = TheApplication().GetBusObject(&quot;Asset Management - Complex&quot;);                              _newline   var bcOLI = boHeader.GetBusComp(&quot;Asset Mgmt - Asset - Header&quot;);_newline   bcOLI.ClearToQuery();_newline   bcOLI.ActivateField(&quot;Integration Id&quot;);_newline   bcOLI.ActivateField(&quot;Status&quot;);_newline   bcOLI.SetViewMode(AllView);_newline   bcOLI.SetSearchExpr(&quot;[Integration Id]=&apos;&quot;+ strOLIIntegId + &quot;&apos;&quot;); _newline   bcOLI.ExecuteQuery(ForwardOnly);_newline   if(bcOLI.FirstRecord())  _newline  { _newline   //TheApplication().RaiseErrorText(bcOLI.GetFieldValue(&quot;Status&quot;) );_newline   if(&quot;Suspended&quot; == bcOLI.GetFieldValue(&quot;Status&quot;))_newline   {_newline    strUI_usName = &quot;SuspendedStatus&quot;;_newline    var oService = TheApplication().GetService(&quot;Cfg Web UI Service Loader&quot;);_newline   var oInputs  = TheApplication().NewPropertySet();_newline   var oOutputs = TheApplication().NewPropertySet();_newline   oInputs.SetProperty(strProdId, strUI_usName);_newline   oService.InvokeMethod(&quot;SetUIOption&quot;, oInputs, oOutputs);    _newline   } // if status=Suspended_newline  }//bcOLI.FirstRecord()_newline }// if strOLIIntegId _newline }// if strProdId_newline return (CancelOperation);_newline}"
+ Program_spcLanguage="JS"
+ Name="func_usSelectUI"
+ Sequence="2"
+></Business_spcService_spcScript
+></Business_spcService
+>
